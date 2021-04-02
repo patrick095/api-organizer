@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
-const authConfig = require('../config/auth.json')
-const path = require('path')
-
+//const authConfig = require('../config/auth.json')
+const authConfig = process.env.AUTH_SECRET
 
 module.exports = (req, res, next ) => {
     const authHeader = req.query.api
@@ -22,7 +21,7 @@ module.exports = (req, res, next ) => {
         return res.status(401).send({ erro: "token mal formado!"})
     }
 
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
+    jwt.verify(token, authConfig, (err, decoded) => {
         if (err) {
             console.log("token inválido!")
             return res.status(401).send({ erro: "token inválido!"})

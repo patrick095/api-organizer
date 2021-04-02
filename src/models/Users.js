@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
     },
     data:{
         type: Array,
-        default: [{id: "0", type: "card",title: "Novo Card", body: []}]
+        default: [{id: "0", type: "card",title: "Novo Card", body: [{title: "Novo Item", body: ""}]}]
     }
 })
 

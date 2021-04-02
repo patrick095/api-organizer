@@ -3,15 +3,14 @@ const Users = mongoose.model('Users')
 const bcrypt = require('bcryptjs')
 var salt = bcrypt.genSaltSync(13)
 const jwt = require('jsonwebtoken')
-const authConfig = require('../config/auth.json')
-const path = require('path')
-
+//const authConfig = require('../config/auth.json')
+const authConfig = process.env.AUTH_SECRET
 
 module.exports = {
     //normal case
     async signin (req,res){
         function gerarToken(params = {}){
-            return jwt.sign(params, authConfig.secret, { expiresIn: 85999 });
+            return jwt.sign(params, authConfig, { expiresIn: 85999 });
         }
         const user = await Users.findOne({user:req.body.user}).select('+password')
         //verifica se o usuário existe
@@ -37,7 +36,7 @@ module.exports = {
     },
     async verifyUser(req,res){
         function gerarToken(params = {}){
-            return jwt.sign(params, authConfig.secret, { expiresIn: 85999 });
+            return jwt.sign(params, authConfig, { expiresIn: 85999 });
         }
         const user = await Users.findOne({user:req.body.user}).select('+password') //procura o usuário na db
         if (user == null){//verifica se o usuário existe
@@ -49,7 +48,7 @@ module.exports = {
             userTokens.map((token, i) =>{//verificar os 10 ultimos tokens que o usuário gerou
                 if (req.body.token === token) {//verifica se o token enviado está no histórico do usuário
                     confirmedToken++
-                    jwt.verify(token, authConfig.secret, (err, decoded) => { //verifica se o token ainda está válido
+                    jwt.verify(token, authConfig, (err, decoded) => { //verifica se o token ainda está válido
                         if (err) {//caso não seteja válido mas no histórico gera um novo token
                             const newToken = gerarToken({ id: user.id })
                             userTokens.splice(i,1, newToken) //apaga o token inválido e coloca o novo token no lugar
@@ -76,7 +75,7 @@ module.exports = {
     },
     async signup (req,res){
         function gerarToken(params = {}){
-            return jwt.sign(params, authConfig.secret, { expiresIn: 85999 });
+            return jwt.sign(params, authConfig, { expiresIn: 85999 });
         }
         try {
             if ( await Users.findOne({ user:req.body.user }) ){
@@ -120,7 +119,6 @@ module.exports = {
         }
     },
     async updateData(req,res){
-        console.log(req.body)
         const filter = req.body._id
         const update = {data: req.body.data}
         var response = await Users.findByIdAndUpdate(filter,update, {new: true})
