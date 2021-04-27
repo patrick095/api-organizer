@@ -99,6 +99,7 @@ module.exports = {
                 name:user.name,
                 email:user.email,
                 data: user.data,
+                theme: user.theme,
                 token: gerarToken({ id: user.id }),
              })
         } 
@@ -120,7 +121,9 @@ module.exports = {
     },
     async updateData(req,res){
         const filter = req.body._id
-        const update = {data: req.body.data}
+        delete req.body._id
+        const update = req.body
+        console.log(update)
         var response = await Users.findByIdAndUpdate(filter,update, {new: true})
         response.password = undefined
         res.send({response})

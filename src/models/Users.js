@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
     data:{
         type: Array,
         default: [{id: "0", type: "card",title: "Novo Card", body: [{title: "Novo Item", body: ""}]}]
+    },
+    theme:{
+        type: Object,
+        default: {bgColor: "#4266b9", fontColor: "#fff"}
     }
 })
 
